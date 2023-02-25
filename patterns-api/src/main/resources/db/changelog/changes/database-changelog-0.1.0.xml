@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="
+    http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+
+    <changeSet id="202301291833" author="ibilic">
+        <createTable tableName="user">
+            <column name="id_user" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="admin" type="boolean"/>
+        </createTable>
+
+        <createTable tableName="package">
+            <column name="id_package" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="upload_size" type="double">
+                <constraints nullable="false"/>
+            </column>
+            <column name="daily_upload_limit" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="double">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="content">
+            <column name="id_content" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="content" type="longblob">
+                <constraints nullable="false"/>
+            </column>
+            <column name="size" type="double">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="format" type="varchar(5)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="tag">
+            <column name="id_tag" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="tag_content">
+            <column name="id_tag_content" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tag_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="tag_id"
+                                 baseTableName="tag_content"
+                                 constraintName="fk_tag_content_id"
+                                 referencedColumnNames="id_tag"
+                                 referencedTableName="tag"/>
+
+        <addForeignKeyConstraint baseColumnNames="content_id"
+                                 baseTableName="tag_content"
+                                 constraintName="fk_content_tag_id"
+                                 referencedColumnNames="id_content"
+                                 referencedTableName="content"/>
+
+        <createTable tableName="user_package">
+            <column name="id_user_package" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="date_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="package_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="user_content">
+            <column name="id_user_content" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="user_content"
+                                 constraintName="fk_user_content_id"
+                                 referencedColumnNames="id_user"
+                                 referencedTableName="user"/>
+
+        <addForeignKeyConstraint baseColumnNames="content_id"
+                                 baseTableName="user_package"
+                                 constraintName="fk_content_user_id"
+                                 referencedColumnNames="id_content"
+                                 referencedTableName="content"/>
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="user_package"
+                                 constraintName="fk_user_package_id"
+                                 referencedColumnNames="id_user"
+                                 referencedTableName="user"/>
+
+        <addForeignKeyConstraint baseColumnNames="package_id"
+                                 baseTableName="user_package"
+                                 constraintName="fk_package_user_id"
+                                 referencedColumnNames="id_package"
+                                 referencedTableName="package"/>
+
+        <createTable tableName="user_consumption">
+            <column name="id_user_consumption" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="date_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="package_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="upload_size" type="double">
+                <constraints nullable="false"/>
+            </column>
+            <column name="daily_upload_limit" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="user_consumption"
+                                 constraintName="fk_user_consumption_id"
+                                 referencedColumnNames="id_user"
+                                 referencedTableName="user"/>
+
+        <addForeignKeyConstraint baseColumnNames="package_id"
+                                 baseTableName="user_consumption"
+                                 constraintName="fk_package_consumption_id"
+                                 referencedColumnNames="id_package"
+                                 referencedTableName="package"/>
+    </changeSet>
+
+    <changeSet author="ibilic" id="202301291834">
+        <dropColumn tableName="user_package" columnName="content_id"/>
+    </changeSet>
+
+    <changeSet author="ibilic" id="202301291836">
+        <dropColumn tableName="content" columnName="content"/>
+        <addColumn tableName="content">
+            <column name="content" type="varchar"></column>
+        </addColumn>
+    </changeSet>
+
+
+</databaseChangeLog>
